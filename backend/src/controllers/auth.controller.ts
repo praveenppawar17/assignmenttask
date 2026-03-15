@@ -21,7 +21,12 @@ export const register = async (
 
 export const login = async (req: Request<{}, {}, LoginBody>, res: Response) => {
   try {
-    const user = await loginUser(req.body);
+    const { token, user } = await loginUser(req.body);
+    res.cookie("token", token, { 
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", 
+      sameSite: "lax",
+    });
     return sendResponse(res, 200, user, "Login successful");
   } catch (error) {
     if (error instanceof Error) {

@@ -1,6 +1,7 @@
-import mongoose, { Document, Schema, Types } from "mongoose";
+import mongoose, { Document, PopulatedDoc, Schema, Types } from "mongoose";
 import { TaskPriority, TaskStatus } from "../types/task.types";
 import { TASK_PRIORITY, TASK_STATUS } from "../constants";
+import { IProject } from "./project.model";
 
 export interface ITask extends Document {
   title: string;
@@ -8,7 +9,7 @@ export interface ITask extends Document {
   status: TaskStatus;
   priority: TaskPriority;
   dueDate?: Date;
-  projectId: Types.ObjectId;
+  projectId:PopulatedDoc<IProject>
 }
 
 const taskSchema = new Schema<ITask>(

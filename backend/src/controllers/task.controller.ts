@@ -46,6 +46,7 @@ export const getTasks = async (
       status,
       priority,
       dueDate,
+      userId: req.user!.id
     });
 
     const message =
@@ -66,7 +67,7 @@ export const updateTask = async (
   res: Response,
 ) => {
   try {
-    const task = await updateTaskService(req.params.id, req.body);
+    const task = await updateTaskService(req.params.id, req.body, req.user!.id);
     return sendResponse(res, 200, task, "Task updated successfully");
   } catch (error) {
     if (error instanceof Error) {
@@ -82,7 +83,7 @@ export const deleteTask = async (
   res: Response,
 ) => {
   try {
-    const task = await deleteTaskService(req.params.id);
+    const task = await deleteTaskService(req.params.id, req.user!.id);
     return sendResponse(res, 200, task, "Task deleted successfully");
   } catch (error) {
     if (error instanceof Error)

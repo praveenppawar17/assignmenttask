@@ -20,4 +20,5 @@ export type TaskQuery = {
   status?: TaskStatus;
   priority?: TaskPriority;
   dueDate?: string;
+  userId:string
 };
