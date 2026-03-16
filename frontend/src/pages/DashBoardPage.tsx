@@ -16,7 +16,6 @@ import {
 import { fetchDashboardStatsApi } from "../api/dashboardApi";
 import UserProjects from "../components/projects/UserProjects";
 import Loader from "../components/Loader";
-// import { fetchDashboardStats } from "../api/dashboardApi";
 
 export default function DashboardPage() {
   const dispatch = useAppDispatch();
@@ -33,7 +32,6 @@ export default function DashboardPage() {
   const [editProject, setEditProject] = useState<Project | null>(null);
 
   useEffect(() => {
-    // dispatch(fetchProjectsApi())
     dispatch(fetchProjects());
   }, []);
 

@@ -9,6 +9,7 @@ import DashBoardPage from "./pages/DashBoardPage";
 import ProjectDetailPage from "./pages/ProjectDetailPage";
 import Layout from "./components/layout/Layout";
 import { useAppSelector } from "./hooks/redux";
+import ReportPage from "./pages/ReportPage";
 
 function PrivateRoute({ children }: { children: React.ReactNode }) {
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
@@ -72,6 +73,7 @@ function App() {
         >
           <Route path="/dashboard" element={<DashBoardPage />} />
           <Route path="/projects/:id" element={<ProjectDetailPage />} />
+          <Route path="/report" element={<ReportPage />} />
         </Route>
       </Routes>
     </>

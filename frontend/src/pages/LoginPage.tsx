@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { loginSchema } from "../schemas/authSchema";
-// import type { LoginInput } from "../schemas/authSchema";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import type { LoginInput } from "../types/auth.types";
@@ -10,15 +9,13 @@ type FormErrors<T> = Partial<Record<keyof T, string>>;
 
 export default function Login() {
   const dispatch = useAppDispatch();
-  // const dispatch = useDispatch();
-  // const navigate = useNavigate();
   const [form, setForm] = useState<LoginInput>({
     email: "",
     password: "",
   });
 
   const [errors, setErrors] = useState<FormErrors<LoginInput>>({});
-const { loading } = useAppSelector((state) => state.auth);
+  const { loading } = useAppSelector((state) => state.auth);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setErrors((prev) => ({
@@ -28,31 +25,30 @@ const { loading } = useAppSelector((state) => state.auth);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  const result = loginSchema.safeParse(form);
+    const result = loginSchema.safeParse(form);
 
-  if (!result.success) {
-    const fieldErrors: FormErrors<LoginInput> = {};
+    if (!result.success) {
+      const fieldErrors: FormErrors<LoginInput> = {};
 
-    result.error.issues.forEach((err) => {
-      const key = err.path[0] as keyof LoginInput;
-      fieldErrors[key] = err.message;
-    });
+      result.error.issues.forEach((err) => {
+        const key = err.path[0] as keyof LoginInput;
+        fieldErrors[key] = err.message;
+      });
 
-    setErrors(fieldErrors);
-    return;
-  }
+      setErrors(fieldErrors);
+      return;
+    }
 
-  try {
-    await dispatch(loginUser(form)).unwrap();
+    try {
+      await dispatch(loginUser(form)).unwrap();
 
-    toast.success("Login successful");
-
-  } catch (err) {
-    toast.error(err as string);
-  }
-};
+      toast.success("Login successful");
+    } catch (err) {
+      toast.error(err as string);
+    }
+  };
 
   return (
     // <div className="container-app flex flex-col justify-center  max-w-md">
@@ -91,10 +87,9 @@ const { loading } = useAppSelector((state) => state.auth);
             <p className="text-red-400 text-sm">{errors.password}</p>
           )}
 
-          {/* <button className="btn-primary w-full">Login</button> */}
           <button className="btn-primary w-full" disabled={loading}>
-  {loading ? "Logging in..." : "Login"}
-</button>
+            {loading ? "Logging in..." : "Login"}
+          </button>
         </form>
         <p className="text-sm text-gray-400 text-center mt-4">
           Not registered yet?{" "}

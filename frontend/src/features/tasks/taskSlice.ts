@@ -51,16 +51,6 @@ const taskSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      // .addCase(fetchTasks.pending, (state) => {
-      //   state.loading = true;
-      // })
-      // .addCase(fetchTasks.fulfilled, (state, action) => {
-      //   state.loading = false;
-      //   state.tasks = action.payload;
-      // })
-      // .addCase(fetchTasks.rejected, (state) => {
-      //   state.loading = false;
-      // })
       .addCase(fetchTasks.pending, (state) => {
         state.loading = true;
         state.error = null;
@@ -86,30 +76,6 @@ const taskSlice = createSlice({
   },
 });
 
-// ✅ Export the action
+//Export the action
 export const { reorderTasks } = taskSlice.actions;
 export default taskSlice.reducer;
-
-// export const fetchTasks = createAsyncThunk<
-//   Task[],
-//   { projectId: string; filters?: TaskFilters }
-// >("tasks/fetchTasks", async ({ projectId, filters }) => {
-//   const res = await fetchTasksApi(projectId, filters);
-//   return res.data;
-// });
-
-// export const createTask = createAsyncThunk<Task, CreateTaskInput>(
-//   "tasks/createTask",
-//   async (data) => {
-//     const res = await createTaskApi(data);
-//     return res.data;
-//   },
-// );
-
-// export const updateTask = createAsyncThunk<
-//   Task,
-//   { id: string; data: Partial<Task> }
-// >("tasks/updateTask", async ({ id, data }) => {
-//   const res = await updateTaskApi(id, data);
-//   return res.data;
-// });
