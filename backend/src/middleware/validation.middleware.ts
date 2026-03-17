@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { ZodSchema, ZodError } from "zod";
 import { sendResponse } from "../utils/apiResponse";
+import { ApiError } from "../utils/ApiError";
 
 export const validate =
   (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
@@ -19,9 +20,11 @@ export const validate =
           message: err.message,
         }));
 
-        return sendResponse(res, 400, formattedErrors, "Validation error");
+        // return sendResponse(res, 400, formattedErrors, "Validation error");
+        throw new ApiError(400, "Validation error", formattedErrors);
       }
 
-      return sendResponse(res, 500, undefined, "Validation failed");
+      // return sendResponse(res, 500, undefined, "Validation failed");
+       throw new ApiError(500, "Validation failed");
     }
   };

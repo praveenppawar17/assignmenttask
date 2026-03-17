@@ -17,4 +17,7 @@ export const updateTaskSchema = z.object({
     description: z.string().optional(),
     status: z.enum(Object.values(TASK_STATUS)).optional()
   }),
+  params: z.object({
+    id: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid task id"),
+  }),
 });

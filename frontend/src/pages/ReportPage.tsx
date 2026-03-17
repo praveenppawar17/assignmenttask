@@ -1,7 +1,5 @@
 export default function ReportPage() {
-  const reportUrl = "http://localhost/";
-    // const reportUrl = "http://127.0.0.1/"
-    // const reportUrl = "http://localhost:5000/api/report"
+  const reportUrl = "http://4.224.74.152/"
   return (
     <div className="w-full h-full">
       <h2 className="text-xl font-semibold mb-4">Report</h2>
@@ -9,8 +7,9 @@ export default function ReportPage() {
       <iframe
         src={reportUrl}
         title="Report"
-        className="w-full h-[80vh] border rounded"
+        className="w-full h-[80vh] border rounded box-border"
       />
     </div>
   );
 }
+

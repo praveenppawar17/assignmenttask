@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { registerUser, loginUser } from "../services/auth.service";
 import { RegisterBody, LoginBody } from "../types/auth.types";
 import { sendResponse } from "../utils/apiResponse";
+import { ApiError } from "../utils/ApiError";
 
 export const register = async (
   req: Request<{}, {}, RegisterBody>,
@@ -11,7 +12,7 @@ export const register = async (
     const user = await registerUser(req.body);
     return sendResponse(res, 201, user, "User registered successfully");
   } catch (error) {
-    if (error instanceof Error) {
+    if (error instanceof ApiError) {
       return sendResponse(res, 400, undefined, error.message);
     }
 
@@ -29,7 +30,7 @@ export const login = async (req: Request<{}, {}, LoginBody>, res: Response) => {
     });
     return sendResponse(res, 200, user, "Login successful");
   } catch (error) {
-    if (error instanceof Error) {
+    if (error instanceof ApiError) {
       return sendResponse(res, 400, undefined, error.message);
     }
     return sendResponse(res, 500, undefined, "Something went wrong");

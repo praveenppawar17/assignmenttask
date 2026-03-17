@@ -1,5 +1,6 @@
 import Project from "../models/project.model";
 import { CreateProjectBody, UpdateProjectBody } from "../types/project.types";
+import { ApiError } from "../utils/ApiError";
 
 export const createProjectService = async (
   data: CreateProjectBody,
@@ -31,7 +32,7 @@ export const updateProjectService = async (
   );
 
   if (!project) {
-    throw new Error("Project not found or unauthorized");
+    throw new ApiError(404,"Project not found or unauthorized");
   }
 
   return project;
@@ -47,7 +48,7 @@ export const deleteProjectService = async (
   });
 
   if (!project) {
-    throw new Error("Project not found or unauthorized");
+    throw new ApiError(404,"Project not found or unauthorized");
   }
 
   return { message: "Project deleted successfully" };

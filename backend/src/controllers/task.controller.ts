@@ -8,6 +8,7 @@ import {
 
 import { CreateTaskBody, UpdateTaskBody, TaskQuery } from "../types/task.types";
 import { sendResponse } from "../utils/apiResponse";
+import { ApiError } from "../utils/ApiError";
 
 // Create Task
 export const createTask = async (
@@ -22,8 +23,10 @@ export const createTask = async (
     console.log("task... ", task);
     return sendResponse(res, 201, task, "Task created successfully");
   } catch (error) {
-    if (error instanceof Error)
+    if (error instanceof ApiError){
       return sendResponse(res, 500, undefined, error.message);
+    }
+    return sendResponse(res, 500, undefined, "Internal Server Error");
   }
 };
 
@@ -56,9 +59,10 @@ export const getTasks = async (
 
     return sendResponse(res, 200, tasks, message);
   } catch (error) {
-    if (error instanceof Error) {
+    if (error instanceof ApiError) {
       return sendResponse(res, 500, undefined, error.message);
     }
+    return sendResponse(res, 500, undefined, "Internal Server Error");
   }
 };
 
@@ -70,7 +74,7 @@ export const updateTask = async (
     const task = await updateTaskService(req.params.id, req.body, req.user!.id);
     return sendResponse(res, 200, task, "Task updated successfully");
   } catch (error) {
-    if (error instanceof Error) {
+    if (error instanceof ApiError) {
       return sendResponse(res, 404, undefined, error.message);
     }
     return sendResponse(res, 500, undefined, "Something went wrong");
@@ -86,7 +90,9 @@ export const deleteTask = async (
     const task = await deleteTaskService(req.params.id, req.user!.id);
     return sendResponse(res, 200, task, "Task deleted successfully");
   } catch (error) {
-    if (error instanceof Error)
+    if (error instanceof ApiError){
       return sendResponse(res, 500, undefined, error.message);
+    }
+    return sendResponse(res, 500, undefined, "Internal Server Error");
   }
 };

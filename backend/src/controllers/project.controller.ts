@@ -7,6 +7,7 @@ import {
 } from "../services/project.service";
 import { CreateProjectBody, UpdateProjectBody } from "../types/project.types";
 import { sendResponse } from "../utils/apiResponse";
+import { ApiError } from "../utils/ApiError";
 
 // create Project
 export const createProject = async (
@@ -17,9 +18,10 @@ export const createProject = async (
     const project = await createProjectService(req.body, req.user!.id);
     return sendResponse(res, 201, project, "Project created successfully");
   } catch (error) {
-    if (error instanceof Error) {
+    if (error instanceof ApiError) {
       return sendResponse(res, 500, undefined, error.message);
     }
+    return sendResponse(res, 500, undefined, "Internal Server Error");
   }
 };
 
@@ -33,9 +35,10 @@ export const getProjects = async (req: Request, res: Response) => {
         : "Projects fetched successfully";
     return sendResponse(res, 200, projects, message);
   } catch (error) {
-    if (error instanceof Error) {
+    if (error instanceof ApiError) {
       return sendResponse(res, 500, undefined, error.message);
     }
+    return sendResponse(res, 500, undefined, "Internal Server Error");
   }
 };
 
@@ -55,6 +58,7 @@ export const updateProject = async (
     if (error instanceof Error) {
       return sendResponse(res, 500, undefined, error.message);
     }
+    return sendResponse(res, 500, undefined, "Internal Server Error");
   }
 };
 
@@ -67,8 +71,9 @@ export const deleteProject = async (
     const result = await deleteProjectService(req.params.id, req.user!.id);
     return sendResponse(res, 200, result, "Project deleted successfully");
   } catch (error) {
-    if (error instanceof Error) {
+    if (error instanceof ApiError) {
       return sendResponse(res, 500, undefined, error.message);
     }
+    return sendResponse(res, 500, undefined, "Internal Server Error");
   }
 };
