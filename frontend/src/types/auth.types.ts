@@ -9,6 +9,7 @@ export type AuthState = {
   user: User | null
   isAuthenticated: boolean
   loading: boolean
+  error: string | null;
 }
 
 export type RegisterInput = z.infer<typeof registerSchema>;

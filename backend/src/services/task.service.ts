@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import Project, { IProject } from "../models/project.model";
 import Task from "../models/task.model";
 import { CreateTaskBody, TaskQuery, UpdateTaskBody } from "../types/task.types";
+import { ApiError } from "../utils/ApiError";
 
 export const createTaskService = async (
   data: CreateTaskBody & { userId: string },
@@ -30,7 +31,7 @@ export const getTasksService = async (taskQuery: TaskQuery) => {
   });
 
   if (!project) {
-    throw new Error("Unauthorized project");
+    throw new ApiError(401,"Unauthorized project");
   }
   const filter = {
     projectId,

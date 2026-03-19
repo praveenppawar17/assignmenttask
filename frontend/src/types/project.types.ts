@@ -27,6 +27,7 @@ export type ProjectCardProps = {
 export type ProjectState = {
   projects: Project[];
   loading: boolean;
+  error: string | null;
 };
 
 export type ProjectModalProps = {

@@ -20,12 +20,13 @@ export default function TaskModal({
     projectId,
     title: "",
     description: "",
-    status:TASK_STATUS.TODO,
+    status: TASK_STATUS.TODO,
     priority: "" as TaskPriority | "",
     dueDate: "",
   });
   const [loading, setLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const today = new Date().toISOString().split("T")[0];
 
   useEffect(() => {
     if (task) {
@@ -35,7 +36,9 @@ export default function TaskModal({
         description: task.description || "",
         status: task.status,
         priority: task.priority || "",
-        dueDate: task.dueDate || "",
+        dueDate: task.dueDate
+          ? new Date(task.dueDate).toISOString().split("T")[0]
+          : "",
       });
     }
   }, [task]);
@@ -147,14 +150,11 @@ export default function TaskModal({
                   }))
                 }
               >
-                {/* <option value="Todo">Todo</option>
-                <option value="In Progress">In Progress</option>
-                <option value="Completed">Completed</option> */}
                 {Object.values(TASK_STATUS).map((status) => (
-  <option key={status} value={status}>
-    {status}
-  </option>
-))}
+                  <option key={status} value={status}>
+                    {status}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -170,16 +170,12 @@ export default function TaskModal({
                   }))
                 }
               >
-                {/* <option value="">None</option>
-                <option value="Low">Low</option>
-                <option value="Medium">Medium</option>
-                <option value="High">High</option> */}
                 <option value="">None</option>
-{Object.values(TASK_PRIORITY).map((priority) => (
-  <option key={priority} value={priority}>
-    {priority}
-  </option>
-))}
+                {Object.values(TASK_PRIORITY).map((priority) => (
+                  <option key={priority} value={priority}>
+                    {priority}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
@@ -190,6 +186,7 @@ export default function TaskModal({
               type="date"
               className="input"
               value={form.dueDate}
+              min={today}
               onChange={(e) =>
                 setForm((f) => ({ ...f, dueDate: e.target.value }))
               }

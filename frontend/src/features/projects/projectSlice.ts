@@ -1,54 +1,78 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit"
-import type { Project, ProjectState } from "../../types/project.types"
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import type { Project, ProjectState } from "../../types/project.types";
 import {
   deleteProjectApi,
   fetchProjectsApi,
   createProjectApi,
   updateProjectApi,
-} from "../../api/projectApi"
+} from "../../api/projectApi";
 
 const initialState: ProjectState = {
   projects: [],
   loading: false,
-}
+  error: null,
+};
 
-// Fetch all projects
-export const fetchProjects = createAsyncThunk<Project[]>(
-  "projects/fetchProjects",
-  async () => {
-    const res = await fetchProjectsApi()
-    return res.data ?? []
+export const fetchProjects = createAsyncThunk<
+  Project[],
+  void,
+  { rejectValue: string }
+>("projects/fetchProjects", async (_, { rejectWithValue }) => {
+  try {
+    return await fetchProjectsApi();
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
+    }
+    return rejectWithValue("Failed to fetch projects");
   }
-)
+});
 
-// Delete a project
-export const deleteProject = createAsyncThunk(
-  "projects/deleteProject",
-  async (id: string) => {
-    await deleteProjectApi(id)
-    return id
+export const deleteProject = createAsyncThunk<
+  string,
+  string,
+  { rejectValue: string }
+>("projects/deleteProject", async (id, { rejectWithValue }) => {
+  try {
+    await deleteProjectApi(id);
+    return id;
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
+    }
+    return rejectWithValue("Failed to delete project");
   }
-)
+});
 
-// Create a new project
-export const createProject = createAsyncThunk<Project, { projectName: string; description?: string }>(
-  "projects/createProject",
-  async (data) => {
-    const res = await createProjectApi(data)
-    if (!res.success) throw new Error(res.message)
-    return res.data!
+export const createProject = createAsyncThunk<
+  Project,
+  { projectName: string; description?: string },
+  { rejectValue: string }
+>("projects/createProject", async (data, { rejectWithValue }) => {
+  try {
+    return await createProjectApi(data);
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
+    }
+    return rejectWithValue("Failed to create project");
   }
-)
+});
 
-// Update an existing project
-export const updateProject = createAsyncThunk<Project, { id: string; data: { projectName: string; description?: string } }>(
-  "projects/updateProject",
-  async ({ id, data }) => {
-    const res = await updateProjectApi(id, data)
-    if (!res.success) throw new Error(res.message)
-    return res.data!
+export const updateProject = createAsyncThunk<
+  Project,
+  { id: string; data: { projectName: string; description?: string } },
+  { rejectValue: string }
+>("projects/updateProject", async ({ id, data }, { rejectWithValue }) => {
+  try {
+    return await updateProjectApi(id, data);
+  } catch (err) {
+    if (err instanceof Error) {
+      return rejectWithValue(err.message);
+    }
+    return rejectWithValue("Failed to update project");
   }
-)
+});
 
 const projectSlice = createSlice({
   name: "projects",
@@ -56,30 +80,44 @@ const projectSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      // fetchProjects
-      .addCase(fetchProjects.pending, (state) => { state.loading = true })
+      .addCase(fetchProjects.pending, (state) => {
+        state.loading = true;
+        state.error = null;
+      })
       .addCase(fetchProjects.fulfilled, (state, action) => {
-        state.loading = false
-        state.projects = action.payload
+        state.loading = false;
+        state.projects = action.payload;
       })
-      .addCase(fetchProjects.rejected, (state) => { state.loading = false })
-
-      // deleteProject
+      .addCase(fetchProjects.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload ?? "Failed to fetch projects";
+      })
       .addCase(deleteProject.fulfilled, (state, action) => {
-        state.projects = state.projects.filter((p) => p._id !== action.payload)
+        state.projects = state.projects.filter(
+          (p) => p._id !== action.payload
+        );
       })
-
-      // createProject
+      .addCase(deleteProject.rejected, (state, action) => {
+        state.error = action.payload ?? "Delete failed";
+      })
       .addCase(createProject.fulfilled, (state, action) => {
-        state.projects.push(action.payload)
+        state.projects.push(action.payload);
       })
-
-      // updateProject
+      .addCase(createProject.rejected, (state, action) => {
+        state.error = action.payload ?? "Create failed";
+      })
       .addCase(updateProject.fulfilled, (state, action) => {
-        const index = state.projects.findIndex(p => p._id === action.payload._id)
-        if (index !== -1) state.projects[index] = action.payload
+        const index = state.projects.findIndex(
+          (p) => p._id === action.payload._id
+        );
+        if (index !== -1) {
+          state.projects[index] = action.payload;
+        }
       })
-  }
-})
+      .addCase(updateProject.rejected, (state, action) => {
+        state.error = action.payload ?? "Update failed";
+      });
+  },
+});
 
-export default projectSlice.reducer
+export default projectSlice.reducer;
